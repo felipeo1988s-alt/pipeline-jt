@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline CRM · job&talent Colombia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#EEF4FC;min-height:100vh}
+.topbar{background:#1565C0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(21,101,192,0.25)}
+.logo{color:#fff;font-size:16px;font-weight:600}.logo em{color:#90CAF9;font-style:normal}
+.nav{display:flex;gap:6px}
+.nav-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.2s}
+.nav-btn:hover{background:rgba(255,255,255,0.25)}
+.nav-btn.active{background:#fff;color:#1565C0}
+.page{display:none;padding:20px 24px;max-width:1200px;margin:0 auto}.page.show{display:block}
+.page-header{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:16px;border-left:4px solid #1565C0;display:flex;justify-content:space-between;align-items:center}
+.page-title{font-size:18px;font-weight:600;color:#0D1B2A}
+.page-sub{font-size:12px;color:#64748b;margin-top:2px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:10px;padding:13px 16px}
+.kpi-lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.4px;font-weight:500;margin-bottom:5px}
+.kpi-val{font-size:20px;font-weight:600;color:#0D1B2A}
+.kpi-val.blue{color:#1565C0}.kpi-val.green{color:#1A7431}.kpi-val.red{color:#C0392B}
+.kpi-sub{font-size:11px;color:#1565C0;margin-top:3px;font-weight:500}
+.card{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card-ttl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+
+/* ACCESOS */
+.accesos{display:flex;gap:10px;margin-bottom:16px}
+.acceso-btn{flex:1;background:#fff;border:1.5px solid #D0DFF5;border-radius:12px;padding:14px 16px;cursor:pointer;font-family:inherit;text-align:left;transition:all 0.2s;display:block;text-decoration:none}
+.acceso-btn:hover{border-color:#1565C0;background:#F0F7FF;transform:translateY(-1px)}
+.acceso-icon{font-size:22px;margin-bottom:6px}
+.acceso-label{font-size:12px;font-weight:600;color:#0D1B2A}
+.acceso-desc{font-size:10px;color:#64748b;margin-top:2px}
+
+/* EQUIPO TABLE */
+.com-table{width:100%;border-collapse:collapse}
+.com-table thead tr{border-bottom:2px solid #EBF3FF}
+.com-table th{font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;padding:10px 12px;text-align:left}
+.com-table th.r{text-align:right}
+.com-table tbody tr{border-bottom:0.5px solid #F0F4FA;cursor:pointer;transition:background 0.15s}
+.com-table tbody tr:hover{background:#F0F7FF}
+.com-table tbody tr:last-child{border-bottom:none}
+.com-table td{padding:12px;font-size:12px;color:#0D1B2A;vertical-align:middle}
+.com-table td.r{text-align:right}
+.com-avatar{width:32px;height:32px;border-radius:50%;background:#EBF3FF;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#1565C0;margin-right:10px;flex-shrink:0}
+.com-name-cell{display:flex;align-items:center}
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.pill-neg{background:#EBF3FF;color:#1565C0}
+.pill-disc{background:#FFF3CD;color:#8A6200}
+.pill-won{background:#E8F5E9;color:#1A7431}
+.dual-val .cop{font-size:10px;color:#94a3b8;display:block}
+.dual-val .usd{font-size:13px;font-weight:600;color:#1565C0;display:block}
+
+/* COMERCIAL DETAIL */
+.back-btn{background:rgba(21,101,192,0.1);border:1px solid rgba(21,101,192,0.2);color:#1565C0;font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500;margin-bottom:14px;display:inline-block}
+.com-detail-header{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:14px;border-left:4px solid #1565C0;display:flex;align-items:center;gap:16px}
+.com-avatar-lg{width:48px;height:48px;border-radius:50%;background:#EBF3FF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#1565C0;flex-shrink:0}
+
+/* OPP BLOCKS */
+.opp-block{margin-bottom:10px;border-radius:10px;overflow:hidden;border:0.5px solid #E2EAF4}
+.opp-hdr{background:#F8FAFC;padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.15s}
+.opp-hdr:hover{background:#F0F7FF}
+.opp-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.opp-name{font-size:13px;font-weight:500;color:#0D1B2A;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opp-tog{color:#1565C0;font-size:12px;font-weight:600;transition:transform 0.2s}
+.opp-tog.open{transform:rotate(90deg)}
+.q-blocks{background:#fff;padding:10px 14px}
+.q-row{border-radius:8px;margin-bottom:8px;overflow:hidden;border:0.5px solid #E2EAF4}
+.q-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:#F0F7FF}
+.q-hdr:hover{background:#EBF3FF}
+.q-badge{font-size:11px;font-weight:600;color:#1565C0;background:#fff;padding:2px 10px;border-radius:12px;border:1px solid #D0DFF5}
+.q-sub{font-size:10px;color:#64748b;margin-left:8px}
+.q-arr{color:#1565C0;font-size:11px;transition:transform 0.2s;font-weight:600}
+.q-arr.open{transform:rotate(90deg)}
+.q-det{display:none;padding:8px 12px;border-top:0.5px solid #E2EAF4}
+.q-det.show{display:block}
+.m-row{display:flex;align-items:center;padding:6px 0;border-bottom:0.5px solid #F0F4FA}
+.m-row:last-child{border-bottom:none}
+.m-lbl{font-size:11px;color:#64748b;min-width:60px}
+.m-bar{flex:1;height:4px;background:#EBF3FF;border-radius:2px;overflow:hidden;margin:0 12px}
+.m-bar-fill{height:100%;background:#1565C0;border-radius:2px}
+
+/* 5 STAGES */
+.stage-track{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.stages-row{display:flex;align-items:flex-start}
+.conn{flex:1;height:2px;background:#D0DFF5;margin-top:14px}
+.conn.done{background:#1565C0}
+.s-step{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer}
+.s-circle{width:28px;height:28px;border-radius:50%;border:2px solid #D0DFF5;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#64748b;position:relative;z-index:2}
+.s-circle.done{background:#1565C0;border-color:#1565C0;color:#fff}
+.s-circle.cur{background:#fff;border-color:#1565C0;color:#1565C0;box-shadow:0 0 0 3px #BBDEFB}
+.s-lbl{font-size:10px;color:#64748b;margin-top:6px;text-align:center;line-height:1.3;width:64px}
+.s-lbl.cur{color:#1565C0;font-weight:500}
+.s-tip{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:#0D1B2A;color:#fff;border-radius:8px;padding:8px 12px;pointer-events:none;opacity:0;transition:opacity 0.18s;z-index:10;min-width:140px;text-align:center;white-space:nowrap}
+.s-tip::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #0D1B2A}
+.s-step:hover .s-tip{opacity:1}
+.tt-p{font-size:18px;font-weight:600;color:#90CAF9;display:block;margin-bottom:2px}
+.tt-n{font-size:10px;color:#94a3b8}
+
+/* GERENCIAL / PIPELINE */
+.q-filter-bar{display:flex;gap:8px;margin-bottom:16px}
+.qfb{flex:1;background:#fff;border:2px solid #D0DFF5;border-radius:12px;padding:13px 12px;cursor:pointer;font-family:inherit;text-align:center;transition:all 0.2s}
+.qfb:hover{border-color:#1565C0;background:#F0F7FF}
+.qfb.active{background:#1565C0;border-color:#1565C0}
+.qfb .ql{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px}
+.qfb.active .ql{color:#90CAF9}
+.qfb .qv-cop{font-size:11px;color:#94a3b8;margin-bottom:1px}
+.qfb.active .qv-cop{color:#90CAF9}
+.qfb .qv{font-size:19px;font-weight:600;color:#1565C0}
+.qfb.active .qv{color:#fff}
+.qfb .qs{font-size:10px;color:#64748b;margin-top:2px}
+.qfb.active .qs{color:#90CAF9}
+
+.tot-strip{background:#0D1B2A;border-radius:12px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ts-left .ts-lbl{font-size:11px;color:#90CAF9;font-weight:500;margin-bottom:2px}
+.ts-left .ts-cop{font-size:12px;color:#64748b;margin-bottom:2px}
+.ts-left .ts-val{font-size:32px;font-weight:600;color:#fff;line-height:1}
+.ts-left .ts-sub{font-size:11px;color:#4a5568;margin-top:3px}
+.ts-meses{display:flex;gap:0}
+.ts-mes{text-align:center;padding:6px 18px;border-right:1px solid rgba(255,255,255,0.08)}
+.ts-mes:last-child{border-right:none}
+.tsl{font-size:10px;color:#64748b;margin-bottom:2px}
+.tsc{font-size:10px;color:#4a5568;margin-bottom:1px}
+.tsv{font-size:13px;font-weight:600;color:#90CAF9}
+.ts-mes.now .tsl,.ts-mes.now .tsc{color:#BBDEFB}
+.ts-mes.now .tsv{color:#fff;font-size:16px}
+
+/* COMERCIAL BLOCKS */
+.gc-block{margin-bottom:12px;border-radius:12px;overflow:hidden;border:0.5px solid #E2EAF4;background:#fff}
+.gc-hdr{display:flex;align-items:center;padding:12px 16px;cursor:pointer;transition:background 0.15s;gap:12px}
+.gc-hdr:hover{background:#F8FAFC}
+.gc-av{width:36px;height:36px;border-radius:50%;background:#EBF3FF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#1565C0;flex-shrink:0}
+.gc-info{flex:1}
+.gc-name{font-size:13px;font-weight:600;color:#0D1B2A}
+.gc-sub{font-size:11px;color:#64748b;margin-top:1px}
+.gc-right{text-align:right;margin-right:8px}
+.gc-cop{font-size:10px;color:#94a3b8}
+.gc-tot{font-size:16px;font-weight:600;color:#1565C0}
+.gc-arr{color:#1565C0;font-size:13px;font-weight:600;transition:transform 0.2s}
+.gc-arr.open{transform:rotate(90deg)}
+.gc-det{display:none;border-top:1.5px solid #EBF3FF}
+.gc-det.show{display:block}
+
+/* CLIENT TABLE */
+.ct{width:100%;border-collapse:collapse}
+.ct thead{background:#F0F7FF}
+.ct th{font-size:10px;color:#1565C0;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;padding:8px 12px;text-align:left;border-bottom:1px solid #D0DFF5}
+.ct th.r{text-align:right}.ct th.c{text-align:center}
+.ct tbody tr{border-bottom:0.5px solid #F0F4FA}
+.ct tbody tr:last-child{border-bottom:none}
+.ct tbody tr:hover{background:#FAFCFF}
+.ct td{padding:10px 12px;font-size:12px;color:#0D1B2A;vertical-align:top}
+.ct td.r{text-align:right}.ct td.c{text-align:center}
+.ct td.gray{color:#64748b;font-size:11px}
+.cn-cell{display:flex;align-items:flex-start;gap:8px}
+.cn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.cn-name{font-size:12px;font-weight:500;color:#0D1B2A;line-height:1.4}
+.cn-comment{font-size:11px;color:#8A6200;background:#FFF8E1;border-radius:4px;padding:3px 7px;margin-top:4px;line-height:1.4;display:inline-block}
+.m-mini{display:flex;gap:0;text-align:center}
+.m-mini-cell{flex:1;padding:3px 4px;border-right:0.5px solid #E2EAF4}
+.m-mini-cell:last-child{border-right:none}
+.m-mini-lbl{font-size:9px;color:#64748b}
+.m-mini-cop{font-size:9px;color:#94a3b8}
+.m-mini-val{font-size:10px;font-weight:600;color:#1565C0}
+.m-mini-cell.now .m-mini-lbl{color:#1565C0;font-weight:600}
+.m-mini-cell.now .m-mini-val{color:#0D1B2A}
+.ct-total{background:#EBF3FF}
+.ct-total td{font-size:12px;font-weight:600;color:#1565C0;padding:9px 12px;border-top:1.5px solid #1565C0}
+.ct-total td.r{text-align:right}
+
+@media(max-width:760px){.kpi-row{grid-template-columns:repeat(2,1fr)}.q-filter-bar{flex-wrap:wrap}.ts-meses{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">job<em>&</em>talent <span style="opacity:0.6;font-weight:400;font-size:13px"> · Pipeline CRM Colombia</span></div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="navTo('equipo')">Team</button>
+    <button class="nav-btn" id="nav-com" onclick="navTo('comercial')" style="display:none">·</button>
+    <button class="nav-btn" onclick="navTo('gerencial')">Pipeline</button>
+  </div>
+</div>
+
+<!-- PAGE 1: TEAM -->
+<div class="page show" id="page-equipo">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Equipo Comercial · Colombia</div>
+      <div class="page-sub">7 comerciales · 2026</div>
+    </div>
+    <span style="font-size:11px;background:#EBF3FF;color:#1565C0;padding:4px 14px;border-radius:20px;font-weight:500">50+ oportunidades</span>
+  </div>
+
+  <div class="accesos">
+    <a class="acceso-btn" href="#" onclick="navTo('gerencial');return false">
+      <div class="acceso-icon">📊</div>
+      <div class="acceso-label">Vista Pipeline</div>
+      <div class="acceso-desc">Total equipo por Q y mes · Para CEO y financiero</div>
+    </a>
+    <a class="acceso-btn" href="#" onclick="navTo('comercial');return false">
+      <div class="acceso-icon">👤</div>
+      <div class="acceso-label">Detalle por Comercial</div>
+      <div class="acceso-desc">Oportunidades, etapas y proyección individual</div>
+    </a>
+    <a class="acceso-btn" href="#" onclick="alert('Pendiente: Conectar Salesforce — Connected App OAuth 2.0')">
+      <div class="acceso-icon">🔌</div>
+      <div class="acceso-label">Conectar Salesforce</div>
+      <div class="acceso-desc">Pendiente: Connected App OAuth 2.0</div>
+    </a>
+  </div>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="kpi-lbl">Revenue Año 1</div><div class="kpi-val blue">USD $3.35M</div><div class="kpi-sub">COP $12.4B · TRM 3,700</div></div>
+    <div class="kpi"><div class="kpi-lbl">Proyección Q2</div><div class="kpi-val blue">USD $1.14M</div><div class="kpi-sub">COP $4.2B · Abr–Jun 2026</div></div>
+    <div class="kpi"><div class="kpi-lbl">Este mes · Abril</div><div class="kpi-val green">USD $486K</div><div class="kpi-sub">COP $1.8B</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <button onclick="openCrearCliente()" style="background:#1565C0;border:none;color:#fff;font-size:12px;padding:7px 18px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500;display:flex;align-items:center;gap:6px">
+        ＋ Crear cliente
+      </button>
+      <div class="card-ttl" style="margin-bottom:0">Comerciales · USD (TRM $3,700)</div>
+    </div>
+    <table class="com-table">
+      <thead><tr>
+        <th>Comercial</th>
+        <th class="r">Q2 Abr–Jun</th>
+        <th class="r">Revenue Año 1</th>
+        <th>Etapa</th><th></th>
+      </tr></thead>
+      <tbody id="team-tbody"></tbody>
+    </table>
+    <!-- Clientes manuales agregados -->
+    <div id="manual-clients-section" style="display:none">
+      <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;padding:12px 0 8px;border-top:1.5px solid #EBF3FF;margin-top:8px">Clientes sin CRM — agregados manualmente</div>
+      <table class="com-table" id="manual-clients-tbody-wrap">
+        <thead><tr>
+          <th>Cliente</th><th>Comercial</th>
+          <th class="r">Mes de cierre</th>
+          <th class="r">Revenue Año 1</th>
+          <th>Etapa</th><th></th>
+        </tr></thead>
+        <tbody id="manual-clients-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CREAR CLIENTE -->
+<div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(13,27,42,0.6);z-index:200;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:680px;margin:40px auto;padding:28px;position:relative">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div style="font-size:18px;font-weight:600;color:#0D1B2A">Crear cliente</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px">Cliente sin CRM · se agrega directamente a la herramienta</div>
+      </div>
+      <button onclick="closeCrearCliente()" style="background:#EEF4FC;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:#64748b">✕</button>
+    </div>
+
+    <!-- SECCIÓN 1: INFO BÁSICA -->
+    <div style="background:#F0F7FF;border-radius:10px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Información del cliente</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Nombre del cliente *</label>
+          <input id="f-nombre" type="text" placeholder="Ej: Grupo Éxito S.A." style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Comercial asignado *</label>
+          <select id="f-comercial" style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+            <option value="">Selecciona...</option>
+            <option>Felipe Ortiz</option>
+            <option>Ivan Garcia Guio</option>
+            <option>Jose Baron</option>
+            <option>Oscar Ivan Angulo</option>
+            <option>Alejandra Barreto</option>
+            <option>Pablo Congote</option>
+            <option>Carlos Suarez</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Sector / Industria</label>
+          <input id="f-sector" type="text" placeholder="Ej: Retail, Manufactura, BPO..." style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Etapa actual *</label>
+          <select id="f-etapa" style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+            <option value="">Selecciona...</option>
+            <option value="Propuesta enviada">Propuesta enviada · 20%</option>
+            <option value="Negotiation">Negociación · 40%</option>
+            <option value="Firma de contrato">Firma de contrato · 70%</option>
+            <option value="Closed Won">Closed Won · 90%</option>
+            <option value="Inicio operación">Inicio operación · 100%</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Mes de cierre esperado *</label>
+          <select id="f-mes-cierre" style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+            <option value="">Selecciona...</option>
+            <option>Enero 2026</option><option>Febrero 2026</option><option>Marzo 2026</option>
+            <option>Abril 2026</option><option>Mayo 2026</option><option>Junio 2026</option>
+            <option>Julio 2026</option><option>Agosto 2026</option><option>Septiembre 2026</option>
+            <option>Octubre 2026</option><option>Noviembre 2026</option><option>Diciembre 2026</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Fecha 1er trabajador activo</label>
+          <input id="f-worker" type="date" style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: COMENTARIO -->
+    <div style="margin-bottom:16px">
+      <label style="font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px">Comentario / Contexto del negocio</label>
+      <textarea id="f-comentario" rows="2" placeholder="Ej: Cliente estratégico, pidiendo descuento del 8%, necesita intervención gerencial..." style="width:100%;padding:8px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none;resize:vertical" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'"></textarea>
+    </div>
+
+    <!-- SECCIÓN 3: VALORES POR MES -->
+    <div style="background:#F0F7FF;border-radius:10px;padding:14px 16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:0.5px">Facturación proyectada por mes · COP</div>
+        <div style="font-size:11px;color:#64748b">Revenue total: <strong id="f-total-display" style="color:#1565C0">COP $0</strong></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="meses-grid">
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeCrearCliente()" style="background:#EEF4FC;border:none;color:#64748b;font-size:13px;padding:9px 20px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500">Cancelar</button>
+      <button onclick="guardarCliente()" style="background:#1565C0;border:none;color:#fff;font-size:13px;padding:9px 24px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500">Guardar cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: COMERCIAL -->
+<div class="page" id="page-comercial">
+  <button class="back-btn" onclick="navTo('equipo')">← Volver al equipo</button>
+  <div class="com-detail-header">
+    <div class="com-avatar-lg" id="d-av"></div>
+    <div>
+      <div style="font-size:18px;font-weight:600;color:#0D1B2A" id="d-name"></div>
+      <div style="font-size:12px;color:#64748b;margin-top:2px" id="d-email"></div>
+      <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap" id="d-pills"></div>
+    </div>
+  </div>
+  <div class="kpi-row" id="d-kpis"></div>
+
+  <div class="stage-track">
+    <div class="card-ttl">Etapas — pasa el cursor para ver % de avance</div>
+    <div class="stages-row">
+      <div class="s-step">
+        <div class="s-tip"><span class="tt-p">20%</span><span class="tt-n">Propuesta enviada</span></div>
+        <div class="s-circle done">✓</div>
+        <div class="s-lbl">Propuesta<br>enviada</div>
+      </div>
+      <div class="conn done"></div>
+      <div class="s-step">
+        <div class="s-tip"><span class="tt-p">40%</span><span class="tt-n">Negociación</span></div>
+        <div class="s-circle cur">2</div>
+        <div class="s-lbl cur">Negociación<br><em style="font-style:normal;font-size:9px;background:#EBF3FF;padding:1px 5px;border-radius:8px;color:#1565C0">Actual</em></div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step">
+        <div class="s-tip"><span class="tt-p">70%</span><span class="tt-n">Firma de contrato</span></div>
+        <div class="s-circle">3</div>
+        <div class="s-lbl">Firma de<br>contrato</div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step">
+        <div class="s-tip"><span class="tt-p">90%</span><span class="tt-n">Closed Won</span></div>
+        <div class="s-circle">4</div>
+        <div class="s-lbl">Closed<br>Won</div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step">
+        <div class="s-tip"><span class="tt-p">100%</span><span class="tt-n">Inicio de operación</span></div>
+        <div class="s-circle">5</div>
+        <div class="s-lbl">Inicio<br>operación</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl">Oportunidades — clic para ver Q · clic en Q para ver meses</div>
+    <div id="d-opps"></div>
+  </div>
+</div>
+
+<!-- PAGE 3: PIPELINE -->
+<div class="page" id="page-gerencial">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Pipeline · Colombia</div>
+      <div class="page-sub">TRM $3,700</div>
+    </div>
+    <span style="font-size:11px;background:#EBF3FF;color:#1565C0;padding:4px 14px;border-radius:20px;font-weight:500">2026</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+    <div class="kpi" style="border-left:4px solid #1565C0">
+      <div class="kpi-lbl">Revenue Año 1 · Equipo</div>
+      <div class="kpi-val blue">USD $3.35M</div>
+      <div class="kpi-sub">COP $12.4B · TRM 3,700</div>
+    </div>
+    <div class="kpi" style="border-left:4px solid #1565C0">
+      <div class="kpi-lbl">Oportunidades activas</div>
+      <div class="kpi-val">38</div>
+      <div class="kpi-sub">7 comerciales · 2026</div>
+    </div>
+    <div class="kpi" style="border-left:4px solid #1A7431">
+      <div class="kpi-lbl">Closed Won · 2026</div>
+      <div class="kpi-val green">3</div>
+      <div class="kpi-sub">negocios ganados este año</div>
+    </div>
+  </div>
+
+  <div class="stage-track" style="cursor:default">
+    <div class="card-ttl">Etapas — clic para filtrar comerciales y clientes por etapa</div>
+    <div class="stages-row">
+      <div class="s-step" onclick="filterStage('Propuesta enviada')" id="stg-Propuesta enviada">
+        <div class="s-tip"><span class="tt-p">20%</span><span class="tt-n">Clic para filtrar</span></div>
+        <div class="s-circle done" id="sc-Propuesta enviada">✓</div>
+        <div class="s-lbl" id="sl-Propuesta enviada">Propuesta<br>enviada</div>
+      </div>
+      <div class="conn done"></div>
+      <div class="s-step" onclick="filterStage('Negotiation')" id="stg-Negotiation">
+        <div class="s-tip"><span class="tt-p">40%</span><span class="tt-n">Clic para filtrar</span></div>
+        <div class="s-circle cur" id="sc-Negotiation">2</div>
+        <div class="s-lbl cur" id="sl-Negotiation">Negociación</div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step" onclick="filterStage('Firma de contrato')" id="stg-Firma de contrato">
+        <div class="s-tip"><span class="tt-p">70%</span><span class="tt-n">Clic para filtrar</span></div>
+        <div class="s-circle" id="sc-Firma de contrato">3</div>
+        <div class="s-lbl" id="sl-Firma de contrato">Firma de<br>contrato</div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step" onclick="filterStage('Closed Won')" id="stg-Closed Won">
+        <div class="s-tip"><span class="tt-p">90%</span><span class="tt-n">Clic para filtrar</span></div>
+        <div class="s-circle" id="sc-Closed Won">4</div>
+        <div class="s-lbl" id="sl-Closed Won">Closed<br>Won</div>
+      </div>
+      <div class="conn"></div>
+      <div class="s-step" onclick="filterStage('Inicio operación')" id="stg-Inicio operación">
+        <div class="s-tip"><span class="tt-p">100%</span><span class="tt-n">Clic para filtrar</span></div>
+        <div class="s-circle" id="sc-Inicio operación">5</div>
+        <div class="s-lbl" id="sl-Inicio operación">Inicio<br>operación</div>
+      </div>
+    </div>
+    <!-- Stage filter result panel -->
+    <div id="stage-panel" style="display:none;margin-top:16px;border-top:1.5px solid #EBF3FF;padding-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <span style="font-size:12px;font-weight:600;color:#1565C0" id="stage-panel-title"></span>
+          <span style="font-size:11px;color:#64748b;margin-left:8px" id="stage-panel-sub"></span>
+        </div>
+        <button onclick="clearStageFilter()" style="background:#EBF3FF;border:none;color:#1565C0;font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500">✕ Ver todas las etapas</button>
+      </div>
+      <div id="stage-panel-list"></div>
+    </div>
+  </div>
+
+  <div class="q-filter-bar" id="qfbar"></div>
+
+  <div class="tot-strip">
+    <div class="ts-left">
+      <div class="ts-lbl" id="ts-lbl">Selecciona un trimestre</div>
+      <div class="ts-cop" id="ts-cop"></div>
+      <div class="ts-val" id="ts-val">USD $3.35M</div>
+      <div class="ts-sub" id="ts-sub">Total pipeline año 1 · 7 comerciales</div>
+    </div>
+    <div class="ts-meses" id="ts-meses"></div>
+  </div>
+
+  <div id="g-list"></div>
+</div>
+
+<script>
+const TRM=3700;
+
+// Stage filter map: Discovery maps to 'Discovery', Negotiation to 'Negotiation', etc.
+const stageMap={
+  'Propuesta enviada':'Propuesta enviada',
+  'Negotiation':'Negotiation',
+  'Firma de contrato':'Firma de contrato',
+  'Closed Won':'Closed Won',
+  'Inicio operación':'Inicio operación',
+};
+const stageLabels={
+  'Propuesta enviada':'Propuesta enviada · 20%',
+  'Negotiation':'Negociación · 40%',
+  'Firma de contrato':'Firma de contrato · 70%',
+  'Closed Won':'Closed Won · 90%',
+  'Inicio operación':'Inicio de operación · 100%',
+};
+
+let activeStage=null;
+
+function filterStage(stage){
+  // Toggle off if same stage clicked
+  if(activeStage===stage){ clearStageFilter(); return; }
+  activeStage=stage;
+
+  // Highlight selected circle
+  const allCircles=['Propuesta enviada','Negotiation','Firma de contrato','Closed Won','Inicio operación'];
+  allCircles.forEach(s=>{
+    const sc=document.getElementById('sc-'+s);
+    const sl=document.getElementById('sl-'+s);
+    if(!sc) return;
+    if(s===stage){
+      sc.style.background='#1565C0';sc.style.borderColor='#1565C0';sc.style.color='#fff';
+      sc.style.boxShadow='0 0 0 4px #BBDEFB';
+      if(sl){sl.style.color='#1565C0';sl.style.fontWeight='600';}
+    } else {
+      sc.style.background='';sc.style.borderColor='';sc.style.color='';sc.style.boxShadow='';
+      if(sl){sl.style.color='';sl.style.fontWeight='';}
+    }
+  });
+
+  // Map stage name to CRM etapa values
+  const etapaMatch={
+    'Propuesta enviada':['Propuesta enviada'],
+    'Negotiation':['Negotiation','Negociación'],
+    'Discovery':['Discovery'],
+    'Firma de contrato':['Firma de contrato'],
+    'Closed Won':['Closed Won'],
+    'Inicio operación':['Inicio operación','Inicio de operación'],
+  };
+  const matchList=etapaMatch[stage]||[stage];
+
+  // Collect matching opps across all comerciales
+  let results=[];
+  let totalCOP=0;
+  Object.entries(COM).forEach(([key,c])=>{
+    const matching=c.list.filter(o=>matchList.some(m=>o.etapa===m||o.etapa.toLowerCase().includes(m.toLowerCase())));
+    if(!matching.length) return;
+    matching.forEach(o=>{
+      // sum all Q values for this opp
+      const oppTotal=Object.values(o.q).reduce((s,qd)=>{
+        const str=qd.t.replace('COP ','').replace('$','').trim();
+        const mult=str.includes('B')?1e9:str.includes('M')?1e6:1;
+        return s+(isNaN(parseFloat(str))?0:parseFloat(str)*mult);
+      },0);
+      totalCOP+=oppTotal;
+      results.push({com:c,opp:o,key,oppTotal});
+    });
+  });
+
+  // Totals
+  const totCOPStr=totalCOP>=1e9?'COP $'+(totalCOP/1e9).toFixed(1)+'B':'COP $'+Math.round(totalCOP/1e6)+'M';
+  const totUSD=copToUsd(totCOPStr);
+
+  // Update panel title
+  document.getElementById('stage-panel-title').textContent=stageLabels[stage]||stage;
+  document.getElementById('stage-panel-sub').textContent=`${results.length} oportunidad${results.length!==1?'es':''} · ${totCOPStr} · ${totUSD}`;
+
+  // Build list — group by comercial
+  const byComercial={};
+  results.forEach(r=>{
+    if(!byComercial[r.key]) byComercial[r.key]={com:r.com,opps:[]};
+    byComercial[r.key].opps.push(r);
+  });
+
+  let html='';
+  Object.entries(byComercial).forEach(([key,grp])=>{
+    const c=grp.com;
+    const comTotal=grp.opps.reduce((s,r)=>s+r.oppTotal,0);
+    const comCOP=comTotal>=1e9?'COP $'+(comTotal/1e9).toFixed(1)+'B':'COP $'+Math.round(comTotal/1e6)+'M';
+    const comUSD=copToUsd(comCOP);
+
+    const oppRows=grp.opps.map(r=>{
+      const o=r.opp;
+      const oppCOP=r.oppTotal>=1e9?'COP $'+(r.oppTotal/1e9).toFixed(1)+'B':'COP $'+Math.round(r.oppTotal/1e6)+'M';
+      // Get Q2 value if exists, else first Q
+      const q2=o.q['Q2']||Object.values(o.q)[0];
+      const q2Meses=q2?q2.m.map((m,i)=>`
+        <div class="m-mini-cell ${i===0?'now':''}">
+          <div class="m-mini-lbl">${m.n}</div>
+          <div class="m-mini-cop">${m.v}</div>
+          <div class="m-mini-val">${copToUsd(m.v)}</div>
+        </div>`).join(''):'';
+      const qLabel=o.q['Q2']?'Q2':'Q'+Object.keys(o.q)[0]?.replace('Q','');
+      return `
+        <tr>
+          <td>
+            <div class="cn-cell">
+              <div class="cn-dot" style="background:${o.color}"></div>
+              <div>
+                <div class="cn-name">${o.name}</div>
+                ${o.comment?`<div class="cn-comment">💬 ${o.comment}</div>`:''}
+              </div>
+            </div>
+          </td>
+          <td class="gray c" style="font-size:11px">${o.cierre}</td>
+          <td>
+            <div class="m-mini">${q2Meses}</div>
+            <div style="font-size:9px;color:#94a3b8;text-align:center;margin-top:2px">${qLabel} · por mes</div>
+          </td>
+          <td class="r">
+            <div class="dual-val">
+              <span class="cop">${oppCOP}</span>
+              <span class="usd">${copToUsd(oppCOP)}</span>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+
+    html+=`
+      <div class="gc-block" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;padding:11px 16px;gap:12px;background:#F8FAFC;border-bottom:0.5px solid #E2EAF4">
+          <div class="gc-av">${c.ini}</div>
+          <div class="gc-info">
+            <div class="gc-name">${c.name}</div>
+            <div class="gc-sub">${grp.opps.length} oportunidad${grp.opps.length!==1?'es':''} en ${stageLabels[stage]?.split(' ·')[0]||stage}</div>
+          </div>
+          <div class="gc-right">
+            <div class="gc-cop">${comCOP}</div>
+            <div class="gc-tot">${comUSD}</div>
+          </div>
+        </div>
+        <table class="ct">
+          <thead><tr>
+            <th>Cliente / Comentario</th>
+            <th class="c">Cierre esperado</th>
+            <th class="c">Por mes (COP / USD)</th>
+            <th class="r">Revenue total oport.</th>
+          </tr></thead>
+          <tbody>${oppRows}</tbody>
+          <tr class="ct-total">
+            <td colspan="3">Total ${c.name.split(' ')[0]}</td>
+            <td class="r"><span style="font-size:10px;color:#64748b;display:block">${comCOP}</span>${comUSD}</td>
+          </tr>
+        </table>
+      </div>`;
+  });
+
+  if(!html) html=`<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">No hay oportunidades en esta etapa actualmente.</div>`;
+
+  document.getElementById('stage-panel-list').innerHTML=html;
+  document.getElementById('stage-panel').style.display='block';
+  document.getElementById('stage-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function clearStageFilter(){
+  activeStage=null;
+  document.getElementById('stage-panel').style.display='none';
+  // Reset all circles
+  const allCircles=['Propuesta enviada','Negotiation','Firma de contrato','Closed Won','Inicio operación'];
+  allCircles.forEach(s=>{
+    const sc=document.getElementById('sc-'+s);
+    const sl=document.getElementById('sl-'+s);
+    if(sc){sc.style.background='';sc.style.borderColor='';sc.style.color='';sc.style.boxShadow='';}
+    if(sl){sl.style.color='';sl.style.fontWeight='';}
+  });
+}
+function copToUsd(s){
+  const clean=s.replace('COP ','').replace('COP','').replace('$','').trim();
+  if(clean==='0'||clean==='') return 'USD $0';
+  const mult=clean.includes('B')?1e9:clean.includes('M')?1e6:1;
+  const num=parseFloat(clean)*mult;
+  const usd=num/TRM;
+  if(usd>=1e6) return 'USD $'+(usd/1e6).toFixed(2)+'M';
+  if(usd>=1e3) return 'USD $'+Math.round(usd/1e3)+'K';
+  return 'USD $'+Math.round(usd);
+}
+
+const pClass={Negotiation:'pill-neg',Discovery:'pill-disc','Closed Won':'pill-won'};
+
+const qCfg={
+  Q1:{lbl:'Q1 · Ene–Mar',cop:'COP $1.8B',meses:['Enero','Febrero','Marzo'],cops:['COP $480M','COP $620M','COP $700M'],now:false},
+  Q2:{lbl:'Q2 · Abr–Jun',cop:'COP $4.2B',meses:['Abril','Mayo','Junio'],cops:['COP $1.8B','COP $1.4B','COP $1.0B'],now:true},
+  Q3:{lbl:'Q3 · Jul–Sep',cop:'COP $3.8B',meses:['Julio','Agosto','Septiembre'],cops:['COP $1.2B','COP $1.4B','COP $1.2B'],now:false},
+  Q4:{lbl:'Q4 · Oct–Dic',cop:'COP $2.6B',meses:['Octubre','Noviembre','Diciembre'],cops:['COP $980M','COP $880M','COP $740M'],now:false},
+};
+
+const COM={
+  fort:{name:'Felipe Ortiz',email:'felipe.ortiz@jobandtalent.com',ini:'FO',opps:18,cop_yr:'COP $7.2B',q2:'COP $2.4B',q3:'COP $2.2B',won:1,etapa:'Negotiation',
+    list:[
+      {name:'Caracol Televisión - New Business',etapa:'Negotiation',color:'#1565C0',cierre:'28 Abr 2026',
+       comment:'Cliente estratégico. Pidiendo descuento del 8%. Requiere intervención gerencial para defender precio.',
+       q:{Q1:{t:'COP $280M',m:[{n:'Mes 1',v:'COP $50M',p:18},{n:'Mes 2',v:'COP $100M',p:36},{n:'Mes 3',v:'COP $130M',p:46}]},
+          Q2:{t:'COP $450M',m:[{n:'Abr',v:'COP $150M',p:33},{n:'May',v:'COP $150M',p:33},{n:'Jun',v:'COP $150M',p:34}]},
+          Q3:{t:'COP $450M',m:[{n:'Jul',v:'COP $150M',p:33},{n:'Ago',v:'COP $150M',p:33},{n:'Sep',v:'COP $150M',p:34}]},
+          Q4:{t:'COP $450M',m:[{n:'Oct',v:'COP $150M',p:33},{n:'Nov',v:'COP $150M',p:33},{n:'Dic',v:'COP $150M',p:34}]}}},
+      {name:'OCROVI - Staffing',etapa:'Negotiation',color:'#1565C0',cierre:'29 Abr 2026',
+       comment:'En revisión legal del contrato. Documentos pendientes por parte del cliente.',
+       q:{Q1:{t:'COP $180M',m:[{n:'Mes 1',v:'COP $40M',p:22},{n:'Mes 2',v:'COP $60M',p:33},{n:'Mes 3',v:'COP $80M',p:44}]},
+          Q2:{t:'COP $270M',m:[{n:'Abr',v:'COP $90M',p:33},{n:'May',v:'COP $90M',p:33},{n:'Jun',v:'COP $90M',p:34}]},
+          Q3:{t:'COP $270M',m:[{n:'Jul',v:'COP $90M',p:33},{n:'Ago',v:'COP $90M',p:33},{n:'Sep',v:'COP $90M',p:34}]},
+          Q4:{t:'COP $260M',m:[{n:'Oct',v:'COP $87M',p:33},{n:'Nov',v:'COP $87M',p:33},{n:'Dic',v:'COP $86M',p:34}]}}},
+      {name:'García Vega SAS - New Business',etapa:'Discovery',color:'#E3B236',cierre:'20 May 2026',
+       comment:'Tomando decisión internamente. Seguimiento agendado próxima semana.',
+       q:{Q2:{t:'COP $80M',m:[{n:'Abr',v:'COP $0',p:0},{n:'May',v:'COP $40M',p:50},{n:'Jun',v:'COP $40M',p:50}]},
+          Q3:{t:'COP $230M',m:[{n:'Jul',v:'COP $75M',p:33},{n:'Ago',v:'COP $80M',p:35},{n:'Sep',v:'COP $75M',p:32}]},
+          Q4:{t:'COP $230M',m:[{n:'Oct',v:'COP $75M',p:33},{n:'Nov',v:'COP $80M',p:35},{n:'Dic',v:'COP $75M',p:32}]}}},
+    ]},
+  igar:{name:'Ivan Garcia Guio',email:'ivan.garcia@jobandtalent.com',ini:'IG',opps:6,cop_yr:'COP $2.1B',q2:'COP $780M',q3:'COP $620M',won:2,etapa:'Closed Won',
+    list:[
+      {name:'La Previsora SA - Closed Won',etapa:'Closed Won',color:'#1A7431',cierre:'12 Dic 2025',
+       comment:'Negocio ganado. En operación activa desde Dic 2025.',
+       q:{Q1:{t:'COP $170M',m:[{n:'Mes 1',v:'COP $50M',p:29},{n:'Mes 2',v:'COP $60M',p:35},{n:'Mes 3',v:'COP $60M',p:36}]},
+          Q2:{t:'COP $204M',m:[{n:'Abr',v:'COP $68M',p:33},{n:'May',v:'COP $68M',p:33},{n:'Jun',v:'COP $68M',p:34}]},
+          Q3:{t:'COP $204M',m:[{n:'Jul',v:'COP $68M',p:33},{n:'Ago',v:'COP $68M',p:33},{n:'Sep',v:'COP $68M',p:34}]},
+          Q4:{t:'COP $102M',m:[{n:'Oct',v:'COP $34M',p:33},{n:'Nov',v:'COP $34M',p:33},{n:'Dic',v:'COP $34M',p:34}]}}},
+      {name:'Canal regional Teleantioquia - Won',etapa:'Closed Won',color:'#1A7431',cierre:'7 Abr 2026',
+       comment:'Negocio ganado. Inicio de operación Abr 2026.',
+       q:{Q2:{t:'COP $270M',m:[{n:'Abr',v:'COP $90M',p:33},{n:'May',v:'COP $90M',p:33},{n:'Jun',v:'COP $90M',p:34}]},
+          Q3:{t:'COP $270M',m:[{n:'Jul',v:'COP $90M',p:33},{n:'Ago',v:'COP $90M',p:33},{n:'Sep',v:'COP $90M',p:34}]}}},
+    ]},
+  jbar:{name:'Jose Baron',email:'jose.baron@jobandtalent.com',ini:'JB',opps:5,cop_yr:'COP $1.4B',q2:'COP $480M',q3:'COP $420M',won:0,etapa:'Discovery',
+    list:[
+      {name:'INCUBADORA SANTANDER - New Business',etapa:'Negotiation',color:'#1565C0',cierre:'30 May 2026',
+       comment:'Avanzando bien. Pendiente aprobación presupuestal. Carta de respaldo gerencial puede acelerar.',
+       q:{Q2:{t:'COP $250M',m:[{n:'Abr',v:'COP $60M',p:24},{n:'May',v:'COP $95M',p:38},{n:'Jun',v:'COP $95M',p:38}]},
+          Q3:{t:'COP $285M',m:[{n:'Jul',v:'COP $95M',p:33},{n:'Ago',v:'COP $95M',p:33},{n:'Sep',v:'COP $95M',p:34}]},
+          Q4:{t:'COP $285M',m:[{n:'Oct',v:'COP $95M',p:33},{n:'Nov',v:'COP $95M',p:33},{n:'Dic',v:'COP $95M',p:34}]}}},
+      {name:'BOLD.CO SAS - Staffing',etapa:'Discovery',color:'#E3B236',cierre:'30 Jun 2026',
+       comment:'En discovery. Reunión de propuesta la próxima semana.',
+       q:{Q3:{t:'COP $120M',m:[{n:'Jul',v:'COP $30M',p:25},{n:'Ago',v:'COP $45M',p:38},{n:'Sep',v:'COP $45M',p:37}]},
+          Q4:{t:'COP $135M',m:[{n:'Oct',v:'COP $45M',p:33},{n:'Nov',v:'COP $45M',p:33},{n:'Dic',v:'COP $45M',p:34}]}}},
+    ]},
+  oang:{name:'Oscar Ivan Angulo',email:'oscar.angulo@jobandtalent.com',ini:'OA',opps:4,cop_yr:'COP $890M',q2:'COP $310M',q3:'COP $280M',won:0,etapa:'Discovery',
+    list:[
+      {name:'Oportunidad Negotiation A',etapa:'Negotiation',color:'#1565C0',cierre:'15 Jun 2026',
+       comment:'Pendiente definir condiciones comerciales finales.',
+       q:{Q2:{t:'COP $130M',m:[{n:'Abr',v:'COP $0',p:0},{n:'May',v:'COP $65M',p:50},{n:'Jun',v:'COP $65M',p:50}]},
+          Q3:{t:'COP $195M',m:[{n:'Jul',v:'COP $65M',p:33},{n:'Ago',v:'COP $65M',p:33},{n:'Sep',v:'COP $65M',p:34}]},
+          Q4:{t:'COP $195M',m:[{n:'Oct',v:'COP $65M',p:33},{n:'Nov',v:'COP $65M',p:33},{n:'Dic',v:'COP $65M',p:34}]}}},
+    ]},
+  abar:{name:'Alejandra Barreto',email:'alejandra.barreto@jobandtalent.com',ini:'AB',opps:3,cop_yr:'COP $540M',q2:'COP $210M',q3:'COP $140M',won:0,etapa:'Discovery',
+    list:[
+      {name:'Oportunidad Negotiation A',etapa:'Negotiation',color:'#1565C0',cierre:'30 May 2026',
+       comment:'Cliente interesado. Esperando propuesta económica ajustada.',
+       q:{Q2:{t:'COP $120M',m:[{n:'Abr',v:'COP $0',p:0},{n:'May',v:'COP $60M',p:50},{n:'Jun',v:'COP $60M',p:50}]},
+          Q3:{t:'COP $180M',m:[{n:'Jul',v:'COP $60M',p:33},{n:'Ago',v:'COP $60M',p:33},{n:'Sep',v:'COP $60M',p:34}]},
+          Q4:{t:'COP $120M',m:[{n:'Oct',v:'COP $40M',p:33},{n:'Nov',v:'COP $40M',p:33},{n:'Dic',v:'COP $40M',p:34}]}}},
+    ]},
+  pcon:{name:'Pablo Congote',email:'pablo.congote@jobandtalent.com',ini:'PC',opps:2,cop_yr:'COP $320M',q2:'COP $130M',q3:'COP $80M',won:0,etapa:'Discovery',
+    list:[
+      {name:'WAMOS AIR - New Business',etapa:'Discovery',color:'#E3B236',cierre:'20 May 2026',
+       comment:'Primera reunión exitosa. En elaboración de propuesta.',
+       q:{Q3:{t:'COP $180M',m:[{n:'Jul',v:'COP $45M',p:25},{n:'Ago',v:'COP $70M',p:39},{n:'Sep',v:'COP $65M',p:36}]},
+          Q4:{t:'COP $140M',m:[{n:'Oct',v:'COP $47M',p:33},{n:'Nov',v:'COP $47M',p:33},{n:'Dic',v:'COP $46M',p:34}]}}},
+    ]},
+  csua:{name:'Carlos Suarez',email:'carlos.suarez@jobandtalent.com',ini:'CS',opps:2,cop_yr:'COP $280M',q2:'COP $110M',q3:'COP $70M',won:0,etapa:'Negotiation',
+    list:[
+      {name:'Oportunidad Negotiation A',etapa:'Negotiation',color:'#1565C0',cierre:'30 May 2026',
+       comment:'Negociación activa. Cliente evaluando con otro proveedor. Intervención en precio puede ser clave.',
+       q:{Q2:{t:'COP $110M',m:[{n:'Abr',v:'COP $0',p:0},{n:'May',v:'COP $55M',p:50},{n:'Jun',v:'COP $55M',p:50}]},
+          Q3:{t:'COP $100M',m:[{n:'Jul',v:'COP $33M',p:33},{n:'Ago',v:'COP $33M',p:33},{n:'Sep',v:'COP $34M',p:34}]},
+          Q4:{t:'COP $70M',m:[{n:'Oct',v:'COP $23M',p:33},{n:'Nov',v:'COP $23M',p:33},{n:'Dic',v:'COP $24M',p:34}]}}},
+    ]},
+};
+
+/* BUILD TEAM TABLE */
+const tbody=document.getElementById('team-tbody');
+Object.entries(COM).forEach(([k,c])=>{
+  const tr=document.createElement('tr');
+  tr.onclick=()=>openCom(k);
+  tr.innerHTML=`
+    <td><div class="com-name-cell"><div class="com-avatar">${c.ini}</div><div>
+      <div style="font-weight:500">${c.name}</div>
+      <div style="font-size:10px;color:#64748b">${c.email}</div>
+    </div></div></td>
+    <td class="r"><div class="dual-val"><span class="cop">${c.q2}</span><span class="usd">${copToUsd(c.q2)}</span></div></td>
+    <td class="r"><div class="dual-val"><span class="cop">${c.cop_yr}</span><span class="usd" style="font-size:14px">${copToUsd(c.cop_yr)}</span></div></td>
+    <td><span class="pill ${pClass[c.etapa]||'pill-neg'}">${c.etapa}</span></td>
+    <td style="color:#1565C0;font-size:16px;text-align:right">→</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+/* BUILD Q FILTER */
+const fbar=document.getElementById('qfbar');
+Object.entries(qCfg).forEach(([q,cfg])=>{
+  const b=document.createElement('button');
+  b.className='qfb'+(cfg.now?' active':'');
+  b.innerHTML=`<div class="ql">${cfg.lbl}</div><div class="qv-cop">${cfg.cop}</div><div class="qv">${copToUsd(cfg.cop)}</div><div class="qs">Total equipo</div>`;
+  b.onclick=()=>selQ(q);
+  fbar.appendChild(b);
+});
+
+let AQ=null;
+selQ('Q2');
+
+function selQ(q){
+  AQ=q;
+  const cfg=qCfg[q];
+  document.querySelectorAll('.qfb').forEach((b,i)=>b.classList.toggle('active',Object.keys(qCfg)[i]===q));
+  document.getElementById('ts-lbl').textContent=cfg.lbl+' · Total equipo';
+  document.getElementById('ts-cop').textContent=cfg.cop;
+  document.getElementById('ts-val').textContent=copToUsd(cfg.cop);
+  document.getElementById('ts-sub').textContent='7 comerciales · TRM $3,700';
+  document.getElementById('ts-meses').innerHTML=cfg.meses.map((m,i)=>`
+    <div class="ts-mes ${cfg.now&&i===0?'now':''}">
+      <div class="tsl">${m}</div>
+      <div class="tsc">${cfg.cops[i]}</div>
+      <div class="tsv">${copToUsd(cfg.cops[i])}</div>
+    </div>`).join('');
+  buildList(q,cfg);
+}
+
+function buildList(q,cfg){
+  const list=document.getElementById('g-list');
+  list.innerHTML='';
+  Object.entries(COM).forEach(([key,c])=>{
+    const opps=c.list.filter(o=>o.q[q]);
+    if(!opps.length) return;
+    const rawCOP=opps.reduce((s,o)=>{
+      const str=o.q[q].t.replace('COP ','').replace('$','').trim();
+      const mult=str.includes('B')?1e9:str.includes('M')?1e6:1;
+      return s+parseFloat(str)*mult;
+    },0);
+    const totCOP=rawCOP>=1e9?'COP $'+(rawCOP/1e9).toFixed(1)+'B':'COP $'+Math.round(rawCOP/1e6)+'M';
+    const totUSD=copToUsd(totCOP);
+
+    const rows=opps.map(o=>{
+      const qd=o.q[q];
+      const mHtml=qd.m.map((m,i)=>`
+        <div class="m-mini-cell ${cfg.now&&i===0?'now':''}">
+          <div class="m-mini-lbl">${m.n}</div>
+          <div class="m-mini-cop">${m.v}</div>
+          <div class="m-mini-val">${copToUsd(m.v)}</div>
+        </div>`).join('');
+      return `<tr>
+        <td>
+          <div class="cn-cell">
+            <div class="cn-dot" style="background:${o.color}"></div>
+            <div>
+              <div class="cn-name">${o.name}</div>
+              ${o.comment?`<div class="cn-comment">💬 ${o.comment}</div>`:''}
+            </div>
+          </div>
+        </td>
+        <td class="c"><span class="pill ${pClass[o.etapa]||'pill-neg'}">${o.etapa}</span></td>
+        <td class="gray c">${o.cierre}</td>
+        <td><div class="m-mini">${mHtml}</div></td>
+        <td class="r">
+          <div class="dual-val">
+            <span class="cop">${qd.t}</span>
+            <span class="usd">${copToUsd(qd.t)}</span>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    const block=document.createElement('div');
+    block.className='gc-block';
+    block.innerHTML=`
+      <div class="gc-hdr" onclick="togGC('${key}')">
+        <div class="gc-av">${c.ini}</div>
+        <div class="gc-info">
+          <div class="gc-name">${c.name}</div>
+          <div class="gc-sub">${opps.length} cliente${opps.length>1?'s':''} · ${cfg.lbl}</div>
+        </div>
+        <div class="gc-right">
+          <div class="gc-cop">${totCOP}</div>
+          <div class="gc-tot">${totUSD}</div>
+        </div>
+        <div class="gc-arr" id="garr_${key}">▶</div>
+      </div>
+      <div class="gc-det" id="gcd_${key}">
+        <table class="ct">
+          <thead><tr>
+            <th>Cliente / Comentario</th>
+            <th class="c">Etapa</th>
+            <th class="c">Cierre esperado</th>
+            <th class="c">Por mes · COP / USD</th>
+            <th class="r">Total ${q}</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+          <tr class="ct-total">
+            <td colspan="4">Total ${c.name.split(' ')[0]} · ${cfg.lbl}</td>
+            <td class="r">
+              <span style="font-size:10px;color:#64748b;display:block">${totCOP}</span>
+              ${totUSD}
+            </td>
+          </tr>
+        </table>
+      </div>`;
+    list.appendChild(block);
+  });
+}
+
+function togGC(key){
+  const el=document.getElementById('gcd_'+key);
+  const arr=document.getElementById('garr_'+key);
+  el.classList.toggle('show');
+  arr.classList.toggle('open',el.classList.contains('show'));
+}
+
+function navTo(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('show'));
+  document.getElementById('page-'+p).classList.add('show');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const map={equipo:0,comercial:1,gerencial:2};
+  document.querySelectorAll('.nav-btn')[map[p]]?.classList.add('active');
+  window.location.hash=p; window.scrollTo(0,0);
+}
+
+function openCom(key){
+  const c=COM[key];
+  document.getElementById('nav-com').style.display='inline-block';
+  document.getElementById('nav-com').textContent=c.ini;
+  document.getElementById('d-av').textContent=c.ini;
+  document.getElementById('d-name').textContent=c.name;
+  document.getElementById('d-email').textContent=c.email;
+  document.getElementById('d-pills').innerHTML=`
+    <span style="font-size:11px;background:#EBF3FF;color:#1565C0;padding:3px 12px;border-radius:20px;font-weight:500">${c.opps} oportunidades</span>
+    <span style="font-size:11px;background:#EBF3FF;color:#1565C0;padding:3px 12px;border-radius:20px;font-weight:500">Q2: ${copToUsd(c.q2)}</span>
+    <span style="font-size:11px;background:#E8F5E9;color:#1A7431;padding:3px 12px;border-radius:20px;font-weight:500">${c.won} Closed Won</span>
+  `;
+  document.getElementById('d-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-lbl">Revenue Año 1</div><div class="kpi-val blue">${copToUsd(c.cop_yr)}</div><div class="kpi-sub">${c.cop_yr} · TRM 3,700</div></div>
+    <div class="kpi"><div class="kpi-lbl">Proyección Q2</div><div class="kpi-val blue">${copToUsd(c.q2)}</div><div class="kpi-sub">${c.q2} · Abr–Jun</div></div>
+    <div class="kpi"><div class="kpi-lbl">Proyección Q3</div><div class="kpi-val">${copToUsd(c.q3)}</div><div class="kpi-sub">${c.q3} · Jul–Sep</div></div>
+    <div class="kpi"><div class="kpi-lbl">Closed Won</div><div class="kpi-val green">${c.won}</div><div class="kpi-sub">Negocios ganados 2026</div></div>
+  `;
+  document.getElementById('d-opps').innerHTML=c.list.map((o,oi)=>{
+    const qH=Object.entries(o.q).map(([ql,qd],qi)=>`
+      <div class="q-row">
+        <div class="q-hdr" onclick="togQ('oq${oi}_${qi}_${key}')">
+          <div style="display:flex;align-items:center"><span class="q-badge">${ql}</span><span class="q-sub">${qd.m.length} meses</span></div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="text-align:right">
+              <div style="font-size:10px;color:#94a3b8">${qd.t}</div>
+              <div style="font-size:14px;font-weight:600;color:#1565C0">${copToUsd(qd.t)}</div>
+            </div>
+            <span class="q-arr" id="oa_${oi}_${qi}_${key}">▶</span>
+          </div>
+        </div>
+        <div class="q-det" id="oq${oi}_${qi}_${key}">
+          ${qd.m.map(m=>`
+            <div class="m-row">
+              <span class="m-lbl">${m.n}</span>
+              <div class="m-bar"><div class="m-bar-fill" style="width:${m.p}%"></div></div>
+              <div style="text-align:right;min-width:100px">
+                <div style="font-size:10px;color:#94a3b8">${m.v}</div>
+                <div style="font-size:12px;font-weight:600;color:#0D1B2A">${copToUsd(m.v)}</div>
+              </div>
+            </div>`).join('')}
+          <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:6px;border-top:1px solid #EBF3FF;margin-top:4px">
+            <span style="font-size:11px;color:#64748b">${qd.t}</span>
+            <span style="font-size:13px;font-weight:600;color:#1565C0">${copToUsd(qd.t)}</span>
+          </div>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="opp-block">
+        <div class="opp-hdr" onclick="togOpp('od${oi}_${key}')">
+          <div class="opp-dot" style="background:${o.color}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="opp-name">${o.name}</div>
+            <div style="font-size:10px;color:#64748b;margin-top:2px">${o.etapa} · Cierre: ${o.cierre}</div>
+          </div>
+          <span class="opp-tog" id="ot_${oi}_${key}">▶</span>
+        </div>
+        <div style="display:none" id="od${oi}_${key}">
+          ${o.comment?`<div style="padding:10px 14px;background:#FFF8E1;border-bottom:0.5px solid #E2EAF4;font-size:11px;color:#5D4037;line-height:1.5">
+            <span style="font-size:9px;font-weight:600;color:#8A6200;text-transform:uppercase;letter-spacing:0.4px;margin-right:6px">💬</span>${o.comment}</div>`:''}
+          <div class="q-blocks">${qH}</div>
+        </div>
+      </div>`;
+  }).join('');
+  navTo('comercial');
+}
+
+function togOpp(id){
+  const el=document.getElementById(id);
+  const tog=document.getElementById('ot_'+id.replace('od',''));
+  el.style.display=el.style.display==='block'?'none':'block';
+  if(tog) tog.classList.toggle('open',el.style.display==='block');
+}
+function togQ(id){
+  const el=document.getElementById(id);
+  const arr=document.getElementById('oa_'+id.replace('oq',''));
+  el.classList.toggle('show');
+  if(arr) arr.classList.toggle('open',el.classList.contains('show'));
+}
+// ── CREAR CLIENTE MANUAL ──
+const meses12=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let manualClients=[];
+
+function openCrearCliente(){
+  // Build meses grid
+  const grid=document.getElementById('meses-grid');
+  grid.innerHTML=meses12.map((m,i)=>`
+    <div style="background:#fff;border-radius:8px;padding:8px 10px;border:0.5px solid #D0DFF5">
+      <div style="font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px">${m} 2026</div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span style="font-size:11px;color:#94a3b8">$</span>
+        <input type="number" id="mes-${i}" min="0" placeholder="0" oninput="recalcTotal()"
+          style="width:100%;padding:4px 6px;border:1px solid #D0DFF5;border-radius:6px;font-size:12px;font-family:inherit;outline:none;font-weight:600;color:#1565C0"
+          onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
+        <span style="font-size:10px;color:#94a3b8">M</span>
+      </div>
+    </div>`).join('');
+  document.getElementById('modal-overlay').style.display='block';
+  document.body.style.overflow='hidden';
+}
+
+function closeCrearCliente(){
+  document.getElementById('modal-overlay').style.display='none';
+  document.body.style.overflow='';
+  // Reset form
+  ['f-nombre','f-comercial','f-sector','f-etapa','f-mes-cierre','f-worker','f-comentario'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  document.getElementById('f-total-display').textContent='COP $0';
+}
+
+function recalcTotal(){
+  let total=0;
+  meses12.forEach((_,i)=>{
+    const val=parseFloat(document.getElementById('mes-'+i)?.value)||0;
+    total+=val;
+  });
+  const fmt=total>=1000?'COP $'+(total/1000).toFixed(1)+'B':'COP $'+total+'M';
+  document.getElementById('f-total-display').textContent=fmt;
+}
+
+function guardarCliente(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const comercial=document.getElementById('f-comercial').value;
+  const sector=document.getElementById('f-sector').value.trim();
+  const etapa=document.getElementById('f-etapa').value;
+  const mesCierre=document.getElementById('f-mes-cierre').value;
+  const worker=document.getElementById('f-worker').value;
+  const comentario=document.getElementById('f-comentario').value.trim();
+
+  if(!nombre||!comercial||!etapa||!mesCierre){
+    alert('Por favor completa los campos obligatorios: Nombre, Comercial, Etapa y Mes de cierre.');
+    return;
+  }
+
+  // Collect monthly values
+  const valoresMes=meses12.map((_,i)=>parseFloat(document.getElementById('mes-'+i)?.value)||0);
+  const totalM=valoresMes.reduce((s,v)=>s+v,0);
+  const totalStr=totalM>=1000?'COP $'+(totalM/1000).toFixed(1)+'B':'COP $'+totalM+'M';
+
+  const client={nombre,comercial,sector,etapa,mesCierre,worker,comentario,valoresMes,totalStr,id:Date.now()};
+  manualClients.push(client);
+  renderManualClients();
+  closeCrearCliente();
+}
+
+function renderManualClients(){
+  const section=document.getElementById('manual-clients-section');
+  const tbody=document.getElementById('manual-clients-tbody');
+  if(!manualClients.length){section.style.display='none';return;}
+  section.style.display='block';
+  tbody.innerHTML=manualClients.map(c=>{
+    const pCls=pClass[c.etapa]||'pill-neg';
+    const usd=copToUsd(c.totalStr);
+    return `<tr>
+      <td>
+        <div style="font-weight:500;color:#0D1B2A">${c.nombre}</div>
+        ${c.sector?`<div style="font-size:10px;color:#64748b">${c.sector}</div>`:''}
+        ${c.comentario?`<div class="cn-comment" style="margin-top:4px">💬 ${c.comentario}</div>`:''}
+      </td>
+      <td style="font-size:12px;color:#64748b">${c.comercial}</td>
+      <td class="r" style="font-size:12px;color:#64748b">${c.mesCierre}</td>
+      <td class="r">
+        <div style="font-size:10px;color:#94a3b8">${c.totalStr}</div>
+        <div style="font-size:13px;font-weight:600;color:#1565C0">${usd}</div>
+      </td>
+      <td><span class="pill ${pCls}">${c.etapa}</span></td>
+      <td>
+        <button onclick="eliminarCliente(${c.id})" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:14px" title="Eliminar">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function eliminarCliente(id){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  manualClients=manualClients.filter(c=>c.id!==id);
+  renderManualClients();
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeCrearCliente();
+});
+
+const h=window.location.hash.replace('#','');
+if(h&&['equipo','gerencial'].includes(h)) navTo(h);
+
+// Guardar la URL local en chrome.storage para que la extensión pueda abrirla
+try {
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    var cleanUrl = window.location.href.split('?')[0].split('#')[0];
+    chrome.storage.local.set({ local_pipeline_url: cleanUrl });
+  }
+} catch(e) {}
+
+// Auto-open crear cliente si viene con ?action=crear
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('action') === 'crear') {
+  navTo('equipo');
+  setTimeout(openCrearCliente, 600);
+}
+
+// ── SYNC FROM EXTENSION ──
+// Map Salesforce Opportunity IDs to our COM keys
+const OPP_ID_MAP = {
+  '006IV00000x1xQjYAI': 'fort'
+};
+
+function applyExtensionUpdates(updates) {
+  if (!updates) return;
+  var updated = false;
+  Object.entries(updates).forEach(([oppId, record]) => {
+    const comKey = OPP_ID_MAP[oppId];
+    if (!comKey || !COM[comKey]) return;
+    COM[comKey].list.forEach(opp => {
+      if (opp.name && opp.name.toLowerCase().includes('caracol')) {
+        if (record.stage) opp.etapa = record.stage;
+        if (record.comment) opp.comment = record.comment;
+        opp.color = record.stage === 'Closed Won' ? '#1A7431' :
+                    record.stage === 'Negotiation' ? '#1565C0' :
+                    record.stage === 'Firma de contrato' ? '#512DA8' :
+                    record.stage === 'Propuesta enviada' ? '#64748b' : opp.color;
+        updated = true;
+      }
+    });
+    if (record.stage) COM[comKey].etapa = record.stage;
+  });
+  if (updated) showSyncToast();
+}
+
+function showSyncToast() {
+  const existing = document.getElementById('jt-sync-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'jt-sync-toast';
+  toast.style.cssText = 'position:fixed;top:70px;right:24px;background:#1A7431;color:#fff;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:inherit;display:flex;align-items:center;gap:8px';
+  toast.innerHTML = '✓ Pipeline actualizado desde la extensión';
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+  // Re-render current view
+  const cur = document.querySelector('.page.show');
+  if (cur && cur.id === 'page-gerencial' && AQ) buildList(AQ, qCfg[AQ]);
+  if (cur && cur.id === 'page-equipo') {
+    document.getElementById('team-tbody').innerHTML = '';
+    Object.entries(COM).forEach(([k,c]) => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => openCom(k);
+      tr.innerHTML = `<td><div class="com-name-cell"><div class="com-avatar">${c.ini}</div><div><div style="font-weight:500">${c.name}</div><div style="font-size:10px;color:#64748b">${c.email}</div></div></div></td><td class="r"><div class="dual-val"><span class="cop">${c.q2}</span><span class="usd">${copToUsd(c.q2)}</span></div></td><td class="r"><div class="dual-val"><span class="cop">${c.cop_yr}</span><span class="usd" style="font-size:14px">${copToUsd(c.cop_yr)}</span></div></td><td><span class="pill ${pClass[c.etapa]||'pill-neg'}">${c.etapa}</span></td><td style="color:#1565C0;font-size:16px;text-align:right">→</td>`;
+      document.getElementById('team-tbody').appendChild(tr);
+    });
+  }
+}
+
+// Listen for messages from extension content script
+try {
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+      if (message.type === 'PIPELINE_UPDATE' && message.data) {
+        applyExtensionUpdates(message.data);
+      }
+      if (message.type === 'OPEN_CREAR_CLIENTE') {
+        navTo('equipo');
+        setTimeout(openCrearCliente, 300);
+        if (sendResponse) sendResponse({ ok: true });
+      }
+      if (message.type === 'NAV_TO') {
+        navTo(message.page || 'equipo');
+        if (message.page === 'equipo') setTimeout(openCrearCliente, 400);
+        if (sendResponse) sendResponse({ ok: true });
+      }
+      return true;
+    });
+  }
+} catch(e) {}
+
+// Poll chrome.storage every 2 seconds for updates
+function pollStorage() {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(['pipeline_updates'], function(data) {
+        if (data && data.pipeline_updates) {
+          applyExtensionUpdates(data.pipeline_updates);
+        }
+      });
+    }
+  } catch(e) {}
+}
+
+// Initial load + poll every 2s
+pollStorage();
+setInterval(pollStorage, 2000);
+</script>
+
+</script>
+</body>
+</html>
