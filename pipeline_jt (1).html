@@ -1116,6 +1116,13 @@ const OPP_ID_MAP = {
   '006IV00000x1xQjYAI': 'fort'
 };
 
+// Save this page's URL so extension can find it
+try {
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.set({ pipeline_public_url: window.location.href });
+  }
+} catch(e) {}
+
 function applyExtensionUpdates(updates) {
   if (!updates) return;
   var updated = false;
@@ -1160,6 +1167,15 @@ function showSyncToast() {
     });
   }
 }
+
+// Expose key variables and functions globally for pipeline_sync.js
+window.COM = COM;
+window.AQ = AQ;
+window.qCfg = qCfg;
+window.manualClients = manualClients;
+window.buildList = buildList;
+window.renderManualClients = renderManualClients;
+window.reRenderAll = showSyncToast; // showSyncToast already re-renders
 
 // Listen for messages from extension content script
 try {
