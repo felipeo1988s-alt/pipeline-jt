@@ -1175,7 +1175,8 @@ window.qCfg = qCfg;
 window.manualClients = manualClients;
 window.buildList = buildList;
 window.renderManualClients = renderManualClients;
-window.reRenderAll = showSyncToast; // showSyncToast already re-renders
+window.reRenderAll = showSyncToast;
+window.applyExtensionUpdates = applyExtensionUpdates;
 
 // ── RECEIVE SYNC FROM EXTENSION via postMessage ──
 window.addEventListener('message', function(event) {
