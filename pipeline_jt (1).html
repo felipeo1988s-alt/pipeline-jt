@@ -1123,7 +1123,7 @@ try {
   }
 } catch(e) {}
 
-function applyExtensionUpdates(updates) {
+function applyExtensionUpdates(updates, showToast) {
   if (!updates) return;
   var updated = false;
   Object.entries(updates).forEach(([oppId, record]) => {
@@ -1142,18 +1142,22 @@ function applyExtensionUpdates(updates) {
     });
     if (record.stage) COM[comKey].etapa = record.stage;
   });
-  if (updated) showSyncToast();
+  if (updated && showToast !== false) showSyncToast();
+  else if (updated) showSyncToast(false);
 }
 
-function showSyncToast() {
-  const existing = document.getElementById('jt-sync-toast');
-  if (existing) existing.remove();
-  const toast = document.createElement('div');
-  toast.id = 'jt-sync-toast';
-  toast.style.cssText = 'position:fixed;top:70px;right:24px;background:#1A7431;color:#fff;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:inherit;display:flex;align-items:center;gap:8px';
-  toast.innerHTML = '✓ Pipeline actualizado desde la extensión';
-  document.body.appendChild(toast);
-  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+function showSyncToast(showToast) {
+  // Only show toast when explicitly triggered (not on silent re-renders)
+  if (showToast !== false) {
+    const existing = document.getElementById('jt-sync-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'jt-sync-toast';
+    toast.style.cssText = 'position:fixed;top:70px;right:24px;background:#1A7431;color:#fff;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:inherit;display:flex;align-items:center;gap:8px';
+    toast.innerHTML = '✓ Pipeline actualizado desde la extensión';
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+  }
 
   const cur = document.querySelector('.page.show');
   if (cur && cur.id === 'page-gerencial' && AQ) {
@@ -1216,6 +1220,8 @@ window.addEventListener('message', function(event) {
 // ── JSONBIN SYNC ──
 const JSONBIN_BIN_ID = '69f02c9caaba88219746b13a';
 const JSONBIN_API_KEY = '$2a$10$dzj1iMxtKvGpfL501RM1lOME.Z54T.Etj/gXNw94tt0JmNBpvHHY2';
+let lastJsonBinHash = null;
+let firstLoad = true;
 
 function pollJsonBin() {
   fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID + '/latest', {
@@ -1224,10 +1230,17 @@ function pollJsonBin() {
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (data.record && data.record.pipeline_updates) {
-      applyExtensionUpdates(data.record.pipeline_updates);
+      const hash = JSON.stringify(data.record.pipeline_updates);
+      if (hash !== lastJsonBinHash) {
+        const isFirstLoad = firstLoad;
+        lastJsonBinHash = hash;
+        firstLoad = false;
+        // Silent on first load, show toast on real changes
+        applyExtensionUpdates(data.record.pipeline_updates, !isFirstLoad);
+      }
     }
   })
-  .catch(function(e) { console.log('JSONBin poll error:', e); });
+  .catch(function(e) {});
 }
 
 // Poll every 5 seconds
