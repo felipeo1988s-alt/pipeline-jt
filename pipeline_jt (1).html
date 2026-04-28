@@ -1177,6 +1177,27 @@ window.buildList = buildList;
 window.renderManualClients = renderManualClients;
 window.reRenderAll = showSyncToast; // showSyncToast already re-renders
 
+// ── RECEIVE SYNC FROM EXTENSION via postMessage ──
+window.addEventListener('message', function(event) {
+  if (!event.data || event.data.type !== 'JT_PIPELINE_SYNC') return;
+  var data = event.data.data;
+  if (data.pipeline_updates) applyExtensionUpdates(data.pipeline_updates);
+  if (data.manual_clients && data.manual_clients.length) {
+    data.manual_clients.forEach(function(c) {
+      var exists = manualClients.some(function(x) { return x.id === c.id; });
+      if (!exists) {
+        manualClients.push(c);
+        renderManualClients();
+        var t = document.createElement('div');
+        t.style.cssText = 'position:fixed;top:70px;right:24px;background:#1565C0;color:#fff;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:inherit';
+        t.textContent = '✓ Cliente "' + c.nombre + '" agregado desde la extensión';
+        document.body.appendChild(t);
+        setTimeout(function() { if(t.parentNode) t.remove(); }, 4000);
+      }
+    });
+  }
+});
+
 // Listen for messages from extension content script
 try {
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
