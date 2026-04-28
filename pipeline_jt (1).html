@@ -1180,8 +1180,9 @@ window.applyExtensionUpdates = applyExtensionUpdates;
 
 // ── RECEIVE SYNC FROM EXTENSION via postMessage ──
 window.addEventListener('message', function(event) {
-  if (!event.data || event.data.type !== 'JT_PIPELINE_SYNC') return;
+  if (!event.data || event.data.source !== 'jt-extension') return;
   var data = event.data.data;
+  if (!data) return;
   if (data.pipeline_updates) applyExtensionUpdates(data.pipeline_updates);
   if (data.manual_clients && data.manual_clients.length) {
     data.manual_clients.forEach(function(c) {
@@ -1198,6 +1199,27 @@ window.addEventListener('message', function(event) {
     });
   }
 });
+
+// ── JSONBIN SYNC ──
+const JSONBIN_BIN_ID = '69f02c9caaba88219746b13a';
+const JSONBIN_API_KEY = '$2a$10$dzj1iMxtKvGpfL501RM1lOME.Z54T.Etj/gXNw94tt0JmNBpvHHY2';
+
+function pollJsonBin() {
+  fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID + '/latest', {
+    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.record && data.record.pipeline_updates) {
+      applyExtensionUpdates(data.record.pipeline_updates);
+    }
+  })
+  .catch(function(e) { console.log('JSONBin poll error:', e); });
+}
+
+// Poll every 5 seconds
+pollJsonBin();
+setInterval(pollJsonBin, 5000);
 
 // Listen for messages from extension content script
 try {
