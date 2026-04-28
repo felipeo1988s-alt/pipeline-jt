@@ -1154,9 +1154,22 @@ function showSyncToast() {
   toast.innerHTML = '✓ Pipeline actualizado desde la extensión';
   document.body.appendChild(toast);
   setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
-  // Re-render current view
+
   const cur = document.querySelector('.page.show');
-  if (cur && cur.id === 'page-gerencial' && AQ) buildList(AQ, qCfg[AQ]);
+  if (cur && cur.id === 'page-gerencial' && AQ) {
+    // Save which blocks are open before re-render
+    const openBlocks = [];
+    document.querySelectorAll('.gc-det.show').forEach(el => openBlocks.push(el.id));
+    buildList(AQ, qCfg[AQ]);
+    // Restore open blocks after re-render
+    openBlocks.forEach(id => {
+      const el = document.getElementById(id);
+      const key = id.replace('gcd_','');
+      const arr = document.getElementById('garr_' + key);
+      if (el) { el.classList.add('show'); }
+      if (arr) { arr.classList.add('open'); }
+    });
+  }
   if (cur && cur.id === 'page-equipo') {
     document.getElementById('team-tbody').innerHTML = '';
     Object.entries(COM).forEach(([k,c]) => {
