@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "job&talent · Pipeline CRM",
-  "version": "7.0",
+  "version": "7.0.1",
   "description": "Actualiza etapas y comentarios de oportunidades de Salesforce en tiempo real",
   "permissions": ["activeTab", "storage", "tabs", "scripting"],
   "host_permissions": [
