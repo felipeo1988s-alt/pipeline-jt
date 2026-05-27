@@ -993,11 +993,26 @@ const meses12=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto'
 let manualClients=[];
 
 function openCrearCliente(){
-  // Build meses grid
+  const _now=new Date();
+  const _yr=_now.getFullYear();
+  const _curMo=_now.getMonth();
+  const sel=document.getElementById('f-mes-inicio');
+  if(sel) sel.innerHTML=meses12.map((m,i)=>`<option value="${i}"${i===_curMo?' selected':''}>${m} ${_yr}</option>`).join('');
+  rebuildMesesGrid();
+  document.getElementById('modal-overlay').style.display='block';
+  document.body.style.overflow='hidden';
+}
+
+function rebuildMesesGrid(){
+  const _now=new Date();
+  const _yr=_now.getFullYear();
+  const startIdx=parseInt(document.getElementById('f-mes-inicio')?.value??_now.getMonth());
   const grid=document.getElementById('meses-grid');
-  grid.innerHTML=meses12.map((m,i)=>`
-    <div style="background:#fff;border-radius:8px;padding:8px 10px;border:0.5px solid #D0DFF5">
-      <div style="font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px">${m} 2026</div>
+  if(!grid) return;
+  grid.innerHTML=meses12.slice(startIdx).map((m,j)=>{
+    const i=startIdx+j;
+    return `<div style="background:#fff;border-radius:8px;padding:8px 10px;border:0.5px solid #D0DFF5">
+      <div style="font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px">${m} ${_yr}</div>
       <div style="display:flex;align-items:center;gap:4px">
         <span style="font-size:11px;color:#94a3b8">$</span>
         <input type="number" id="mes-${i}" min="0" placeholder="0" oninput="recalcTotal()"
@@ -1005,9 +1020,9 @@ function openCrearCliente(){
           onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
         <span style="font-size:10px;color:#94a3b8">M</span>
       </div>
-    </div>`).join('');
-  document.getElementById('modal-overlay').style.display='block';
-  document.body.style.overflow='hidden';
+    </div>`;
+  }).join('');
+  recalcTotal();
 }
 
 function closeCrearCliente(){
