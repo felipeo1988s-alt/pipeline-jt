@@ -994,10 +994,14 @@ let manualClients=[];
 
 function openCrearCliente(){
   const _now=new Date();
-  const _yr=_now.getFullYear();
   const _curMo=_now.getMonth();
+  const _curYr=_now.getFullYear();
   const sel=document.getElementById('f-mes-inicio');
-  if(sel) sel.innerHTML=meses12.map((m,i)=>`<option value="${i}"${i===_curMo?' selected':''}>${m} ${_yr}</option>`).join('');
+  if(sel) sel.innerHTML=Array.from({length:12},(_,j)=>{
+    const mo=(_curMo+j)%12;
+    const yr=_curYr+Math.floor((_curMo+j)/12);
+    return `<option value="${j}">${meses12[mo]} ${yr}</option>`;
+  }).join('');
   rebuildMesesGrid();
   document.getElementById('modal-overlay').style.display='block';
   document.body.style.overflow='hidden';
