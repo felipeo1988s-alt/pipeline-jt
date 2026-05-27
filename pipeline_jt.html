@@ -327,6 +327,10 @@ body{font-family:'DM Sans',sans-serif;background:#EEF4FC;min-height:100vh}
         <div style="font-size:11px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:0.5px">Facturación proyectada por mes · COP</div>
         <div style="font-size:11px;color:#64748b">Revenue total: <strong id="f-total-display" style="color:#1565C0">COP $0</strong></div>
       </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <label style="font-size:11px;color:#64748b;font-weight:500;white-space:nowrap">Mes de inicio:</label>
+        <select id="f-mes-inicio" onchange="rebuildMesesGrid()" style="padding:6px 10px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1565C0;font-weight:500" onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'"></select>
+      </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="meses-grid">
       </div>
     </div>
