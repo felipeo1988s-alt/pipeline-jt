@@ -1009,17 +1009,20 @@ function openCrearCliente(){
 
 function rebuildMesesGrid(){
   const _now=new Date();
-  const _yr=_now.getFullYear();
-  const startIdx=parseInt(document.getElementById('f-mes-inicio')?.value??_now.getMonth());
+  const _curMo=_now.getMonth();
+  const _curYr=_now.getFullYear();
+  const startOffset=parseInt(document.getElementById('f-mes-inicio')?.value??0);
   const grid=document.getElementById('meses-grid');
   if(!grid) return;
-  grid.innerHTML=meses12.slice(startIdx).map((m,j)=>{
-    const i=startIdx+j;
+  grid.innerHTML=Array.from({length:12},(_,j)=>{
+    const totalMo=_curMo+startOffset+j;
+    const mo=totalMo%12;
+    const yr=_curYr+Math.floor(totalMo/12);
     return `<div style="background:#fff;border-radius:8px;padding:8px 10px;border:0.5px solid #D0DFF5">
-      <div style="font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px">${m} ${_yr}</div>
+      <div style="font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px">${meses12[mo]} ${yr}</div>
       <div style="display:flex;align-items:center;gap:4px">
         <span style="font-size:11px;color:#94a3b8">$</span>
-        <input type="number" id="mes-${i}" min="0" placeholder="0" oninput="recalcTotal()"
+        <input type="number" id="mes-${j}" min="0" placeholder="0" oninput="recalcTotal()"
           style="width:100%;padding:4px 6px;border:1px solid #D0DFF5;border-radius:6px;font-size:12px;font-family:inherit;outline:none;font-weight:600;color:#1565C0"
           onfocus="this.style.borderColor='#1565C0'" onblur="this.style.borderColor='#D0DFF5'">
         <span style="font-size:10px;color:#94a3b8">M</span>
