@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Crear cliente · job&talent Pipeline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#EEF4FC;min-height:100vh;padding:24px}
+.top{background:#1565C0;position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;z-index:100}
+.logo{color:#fff;font-size:15px;font-weight:600}.logo em{color:#90CAF9;font-style:normal}
+.back{background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500}
+.wrap{max-width:720px;margin:70px auto 0;background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+.title{font-size:20px;font-weight:600;color:#0D1B2A;margin-bottom:4px}
+.sub{font-size:12px;color:#64748b;margin-bottom:24px}
+.sec-title{font-size:11px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:0.5px;background:#F0F7FF;padding:10px 14px;border-radius:8px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+label{font-size:11px;color:#64748b;font-weight:500;display:block;margin-bottom:4px}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid #D0DFF5;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#0D1B2A;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:#1565C0}
+textarea{resize:vertical;margin-bottom:20px}
+.mes-sec{background:#F0F7FF;border-radius:10px;padding:14px;margin-bottom:24px}
+.mes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.mes-title{font-size:11px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:0.5px}
+.mes-total{font-size:13px;font-weight:600;color:#1565C0}
+.mes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mes-cell{background:#fff;border-radius:8px;padding:10px;border:0.5px solid #E2EAF4}
+.mes-name{font-size:10px;color:#64748b;font-weight:500;margin-bottom:6px}
+.mes-input-wrap{display:flex;align-items:center;gap:4px}
+.mes-input-wrap span{font-size:11px;color:#94a3b8}
+.mes-input-wrap input{padding:5px 7px;font-size:12px;font-weight:600;color:#1565C0}
+.btns{display:flex;gap:10px;justify-content:flex-end}
+.btn-cancel{background:#EEF4FC;border:none;color:#64748b;font-size:13px;padding:10px 22px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-save{background:#1565C0;border:none;color:#fff;font-size:13px;padding:10px 28px;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:600}
+.toast{display:none;position:fixed;top:70px;right:24px;background:#1A7431;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:999}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">job<em>&</em>talent · Pipeline CRM</div>
+  <button class="back" id="btn-back">← Volver</button>
+</div>
+<div class="toast" id="toast">✓ Cliente guardado</div>
+<div class="wrap">
+  <div class="title">Crear cliente</div>
+  <div class="sub">Cliente sin CRM · se agrega directamente a la herramienta</div>
+  <div class="sec-title">INFORMACIÓN DEL CLIENTE</div>
+  <div class="grid">
+    <div><label>Nombre del cliente *</label><input type="text" id="f-nombre" placeholder="Ej: Grupo Éxito S.A."></div>
+    <div><label>Comercial asignado *</label>
+      <select id="f-comercial">
+        <option value="">Selecciona...</option>
+        <option>Felipe Ortiz</option><option>Ivan Garcia Guio</option><option>Jose Baron</option>
+        <option>Oscar Ivan Angulo</option><option>Alejandra Barreto</option><option>Pablo Congote</option><option>Carlos Suarez</option>
+      </select>
+    </div>
+    <div><label>Sector / Industria</label><input type="text" id="f-sector" placeholder="Ej: Retail, Manufactura..."></div>
+    <div><label>Etapa actual *</label>
+      <select id="f-etapa">
+        <option value="">Selecciona...</option>
+        <option value="Propuesta enviada">Propuesta enviada · 20%</option>
+        <option value="Negotiation">Negociación · 40%</option>
+        <option value="Firma de contrato">Firma de contrato · 70%</option>
+        <option value="Closed Won">Closed Won · 90%</option>
+        <option value="Inicio operación">Inicio operación · 100%</option>
+      </select>
+    </div>
+    <div><label>Mes de cierre esperado *</label>
+      <select id="f-mes-cierre">
+        <option value="">Selecciona...</option>
+        <option>Enero 2026</option><option>Febrero 2026</option><option>Marzo 2026</option>
+        <option>Abril 2026</option><option>Mayo 2026</option><option>Junio 2026</option>
+        <option>Julio 2026</option><option>Agosto 2026</option><option>Septiembre 2026</option>
+        <option>Octubre 2026</option><option>Noviembre 2026</option><option>Diciembre 2026</option>
+      </select>
+    </div>
+    <div><label>Fecha 1er trabajador activo</label><input type="date" id="f-worker"></div>
+  </div>
+  <label>Comentario / Contexto del negocio</label>
+  <textarea id="f-comentario" rows="3" placeholder="Ej: Cliente estratégico, pidiendo descuento del 8%..."></textarea>
+  <div class="mes-sec">
+    <div class="mes-header">
+      <span class="mes-title">FACTURACIÓN PROYECTADA POR MES · COP (millones)</span>
+      <span class="mes-total" id="total-display">Total: COP $0</span>
+    </div>
+    <div class="mes-grid" id="mes-grid"></div>
+  </div>
+  <div class="btns">
+    <button class="btn-cancel" id="btn-cancel">Cancelar</button>
+    <button class="btn-save" id="btn-save">Guardar cliente</button>
+  </div>
+</div>
+<script src="crear_app.js"></script>
+</body>
+</html>

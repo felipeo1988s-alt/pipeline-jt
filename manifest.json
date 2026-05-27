@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "job&talent · Pipeline CRM",
+  "version": "7.0",
+  "description": "Actualiza etapas y comentarios de oportunidades de Salesforce en tiempo real",
+  "permissions": ["activeTab", "storage", "tabs", "scripting"],
+  "host_permissions": [
+    "https://*.lightning.force.com/*",
+    "https://*.salesforce.com/*",
+    "https://felipeo1988s-alt.github.io/*",
+    "https://api.jsonbin.io/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.lightning.force.com/*","https://*.salesforce.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://felipeo1988s-alt.github.io/*"],
+      "js": ["pipeline_sync.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [{
+    "resources": ["pipeline_jt.html","pipeline_app.js","crear.html","crear_app.js","icon16.png","icon48.png","icon128.png"],
+    "matches": ["<all_urls>"]
+  }]
+}
