@@ -1284,6 +1284,21 @@ function pollStorage() {
 // Initial load + poll every 2s
 pollStorage();
 setInterval(pollStorage, 2000);
+
+// Dynamic date labels
+(function(){
+  var _d = new Date();
+  var _yr = _d.getFullYear();
+  var _mo = _d.getMonth();
+  var _mNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var _q = 'Q' + (Math.floor(_mo / 3) + 1);
+  var elYear = document.getElementById('team-year-sub');
+  if (elYear) elYear.textContent = '7 comerciales · ' + _yr;
+  var elMes = document.getElementById('kpi-mes-lbl');
+  if (elMes) elMes.textContent = 'Este mes · ' + _mNames[_mo];
+  var elQ = document.getElementById('kpi-q-lbl');
+  if (elQ) elQ.textContent = 'Proyección ' + _q;
+})();
 </script>
 
 </script>
